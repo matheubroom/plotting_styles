@@ -1,4 +1,4 @@
-function main_plot = plot_my_graph(x,y,eqn)
+function main_plot = plot_my_graph(x_data,y_data, data_names,fit_model)
 %% Styling
 graph_size = input('Enter size of graph, e.g sm, md, lg: ', 's');
     switch graph_size
@@ -51,7 +51,6 @@ number_steps_y = input('Enter number ticks on axis, e.g 4: ');
 delta_x = (xlim_new(1,2) - xlim_new(1,1))/number_steps_x;
 delta_y = (ylim_new(1,2) - ylim_new(1,1))/number_steps_y;
 
-
 xticks = [xlim_new(1,1):delta_x:xlim_new(1,2)];
 yticks = [ylim_new(1,1):delta_y:ylim_new(1,2)];
 
@@ -69,35 +68,96 @@ set(gca, ...
   'XTick'       , xticks, ...
   'LineWidth'   , 1         );
 
+check_plot = input('Is the limits of the graph ok?: ', 's');
+    switch check_plot 
+        case 'no'
+            xticks= input('Enter the limits for x axis: ');
+            xlim([xticks(1,1) xticks(1,end)]) % set the xlims
+            yticks= input('Enter the limits for y axis: ');
+            ylim([yticks(1,1) yticks(1,end)]) % set the xlims
+        case 'yes'
+    end
+    
+    
+check_plot = input('Are the axis ticks ok?: ', 's');
+    switch check_plot 
+        case 'no'
+            xticks= input('Enter ticks and range for x axis: ');
+            yticks= input('Enter ticks and range for y axis: ');
+            set(gca, ...
+              'GridLineStyle','-'       ,...
+              'Box'         , 'off'     , ...
+              'TickDir'     , 'out'     , ...
+              'TickLength'  , [.02 .02] , ...
+              'XMinorTick'  , 'off'      , ...
+              'YMinorTick'  , 'off'      , ...
+              'YGrid'       , 'off'      , ...
+              'XColor'      , [.0 .0 .0], ...
+              'YColor'      , [.0 .0 .0], ...
+              'YTick'       , yticks, ...
+              'XTick'       , xticks, ...
+              'LineWidth'   , 1         );
+        case 'yes'
+    end
 
 % main_plot.XRuler.MinorTickValues = [xlim_new(1,1):0.2:xlim_new(1,2)];
 %% Plotting a fit
 % 
-% plot_fit = input('What fit go you want?, e.g poly, gauss, none: ', 's');
-%     switch graph_size
-%         case 'poly'
-%             p = polyfit(x,y,7);
-%             fig_ylength = 6;
-%         case 'md'
-%             fig_xlength = 13.5;
-%             fig_ylength = 5.4;
-%         case 'none'
-%     end
 
-syms x y 
-f = fimplicit(eqn)
-uistack(f,'bottom')
-f.LineWidth = 2;
-f.LineStyle = '--';
+plot_fit = input('Do you have an eqn to plot?, e.g yes no: ', 's');
+    switch plot_fit 
+        case 'yes'
+            syms x y
+            eqn_input = input('Whats the eqn in standard notation?, e.g ', 's');
+            plot_color = input('What colour for the plot?, e.g , Red, Green: ', 's');
+            eqn_name = input('What is the label for this eqn?, e.g Trend line', 's');
+            eqn = eval(eqn_input);
+            f = fimplicit(test);
+            uistack(f,'bottom')
+            f.LineWidth = 2;
+            f.LineStyle = '--';
+            f.Color = plot_color ;
+        case 'no'
+    end
 
-plot_color = input('What colour for the plot?, e.g , Red, Green: ', 's');
+plot_fit = input('Do you have fit to plot?, e.g yes no: ', 's');
+    switch plot_fit 
+        case 'yes'
+            plot_color = input('What colour for the plot?, e.g , Red, Green: ', 's');
+            fit_name = input('What is the label for this fit?, e.g Gauss fit: ', 's');
+            h = plot(fit_model);
+            uistack(h,'bottom')
+            h.LineWidth = 2;
+            h.LineStyle = '--';
+            h.Color = plot_color ;
+        case 'no'
+    end
 
-f.Color = plot_color ;
+
 
 %% Legend settings
 legend_location = input('Enter location for legend, e.g southeast: ', 's');
 
-legend(eqn_name, data_names{1,1:3},'location',legend_location)
+if  exist('eqn_name') + exist('data_names') > 2
+    legend(eqn_name, data_names{1,1:length(data_names)},'location',legend_location)
+end
+
+if exist('eqn_name') == 1
+        legend(eqn_name,'location',legend_location)
+end
+
+if exist('fit_name') + exist('data_names') > 2
+    legend(fit_name, data_names{1,1:length(data_names)},'location',legend_location)
+end
+
+if exist('fit_name') == 1
+        legend(fit_name,'location',legend_location)
+end
+
+if exist('data_names') == 1    
+    legend(data_names{1,1:length(data_names)},'location',legend_location)
+end
+
 
 %% Labels and name for the graph
 
