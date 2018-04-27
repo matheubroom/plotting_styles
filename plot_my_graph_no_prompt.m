@@ -1,4 +1,5 @@
 function main_plot = plot_my_graph_no_prompt(x_data,y_data, plot_shape,graph_size, colour_scheme, xticks, yticks, eqn, fit_model, legend_setting, graph_name, strXLabel, strYLabel)
+close all
 %% Styling
     switch graph_size
         case 'sm'
@@ -10,6 +11,9 @@ function main_plot = plot_my_graph_no_prompt(x_data,y_data, plot_shape,graph_siz
         case 'lg'
             fig_xlength = 13.5;
             fig_ylength = 10;
+        case 'custom'
+            fig_xlength = input('Width in cm?, e.g 13.5: ');
+            fig_ylength = input('Height in cm?, e.g 13.5: ');
     end
 
 set(gcf, 'Units', 'centimeters')
@@ -19,12 +23,26 @@ set(gcf, 'Position', afFigurePosition); % [left bottom width height]
 
 %% Plotting the data
 
-[map,num,typ] = brewermap(length(x_data),colour_scheme);
+if ~isempty(colour_scheme)  == 0
+    [map,num,typ] = brewermap(length(x_data),'set1');
+else
+    [map,num,typ] = brewermap(length(x_data),colour_scheme);
+end
 
+
+if ~isempty(plot_shape)  == 0
 hold on
+for i = 1:length(x_data)
+    data(i) = scatter(x_data{1,i}(:,1),y_data{1,i}(:,1),'filled','c','MarkerFaceColor', map(i,:),'MarkerEdgeColor','k');
+end
+else
+    hold on
 for i = 1:length(x_data)
     data(i) = scatter(x_data{1,i}(:,1),y_data{1,i}(:,1),'filled',plot_shape{1,i},'MarkerFaceColor', map(i,:),'MarkerEdgeColor','k');
 end
+end
+
+
 
 
 %% Setting lims
@@ -49,26 +67,31 @@ set(gca, ...
 
 %% Plotting a fit
 % 
+
+
 if ~isempty(eqn) == 1
     syms x y
+    for i =1:length(eqn)
     plot_color = input('What colour for the plot?, e.g , Red, Green: ', 's');
-%     eqn_name = input('What is the label for this eqn?, e.g Trend line', 's');
-    f = fimplicit(eqn);
-    uistack(f,'bottom')
-    f.LineWidth = 2;
-    f.LineStyle = '--';
-    f.Color = plot_color ;
+    f(i) = fimplicit(eqn{1,i});
+    uistack(f(i),'bottom')
+    f(i).LineWidth = 2;
+    f(i).LineStyle = '--';
+    f(i).Color = plot_color ;
+    end
 else 
 end
 
 if ~isempty(fit_model)  == 1
+    for i = 1:length(fit_model)
     plot_color = input('What colour for the plot?, e.g , Red, Green: ', 's');
 %     fit_name = input('What is the label for this fit?, e.g Gauss fit: ', 's');
-    h = plot(fit_model);
-    uistack(h,'bottom')
-    h.LineWidth = 2;
-    h.LineStyle = '--';
-    h.Color = plot_color ;
+    h(i) = plot(fit_model{1,i});
+    uistack(h(i),'bottom')
+    h(i).LineWidth = 2;
+    h(i).LineStyle = '--';
+    h(i).Color = plot_color ;
+    end
 else
 end
 
