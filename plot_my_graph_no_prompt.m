@@ -1,4 +1,4 @@
-function main_plot = plot_my_graph_no_prompt(x_data,y_data, plot_shape,graph_size, colour_scheme, xticks, yticks, eqn, fit_model, legend_setting, graph_name, strXLabel, strYLabel)
+function main_plot = plot_my_graph_no_prompt(plot_type,x_data,y_data, plot_shape,graph_size, colour_scheme, xticks, yticks, eqn, fit_model, legend_setting, graph_name, strXLabel, strYLabel)
 close all
 %% Styling
     switch graph_size
@@ -29,21 +29,25 @@ else
     [map,num,typ] = brewermap(length(x_data),colour_scheme);
 end
 
-
-if ~isempty(plot_shape)  == 0
-hold on
-for i = 1:length(x_data)
-    data(i) = scatter(x_data{1,i}(:,1),y_data{1,i}(:,1),'filled','c','MarkerFaceColor', map(i,:),'MarkerEdgeColor','k');
+switch plot_type
+    case scatter
+        if ~isempty(plot_shape)  == 0
+            hold on
+            for i = 1:length(x_data)
+                data{i,1} = scatter(x_data{1,i}(:,1),y_data{1,i}(:,1),'filled','c','MarkerFaceColor', map(i,:),'MarkerEdgeColor','k');
+            end
+        else
+            hold on
+            for i = 1:length(x_data)
+                data{i,1} = scatter(x_data{1,i}(:,1),y_data{1,i}(:,1),'filled',plot_shape{1,i},'MarkerFaceColor', map(i,:),'MarkerEdgeColor','k');
+            end
+        end
+    case plot
+            hold on
+            for i = 1:length(x_data(1,:))
+                data{i,1}= plot(x_data{1,i}(:,1),y_data{1,i},'Color', map(i,:),'LineStyle',plot_shape{1,i});
+            end
 end
-else
-    hold on
-for i = 1:length(x_data)
-    data(i) = scatter(x_data{1,i}(:,1),y_data{1,i}(:,1),'filled',plot_shape{1,i},'MarkerFaceColor', map(i,:),'MarkerEdgeColor','k');
-end
-end
-
-
-
 
 %% Setting lims
 
@@ -108,8 +112,16 @@ switch legend_setting
         legend_names = strsplit(legend_names ,',');
         legend_location = input('Enter location for legend, e.g southeast: ', 's');
         legend(legend_names,'location', legend_location);
+    case 'on_plot'
+        legend_names = input('Enter name for each legend entry: ','s');
+        legend_names = strsplit(legend_names ,',');
+        legend_location = input('Enter location for legend, e.g southeast: ', 's');
 
-    end
+        for i = 1:length(data)
+        temp_lines(i,1) = data{i,1}(1,1);
+        end
+        legend(temp_lines([1,length(data)]),legend_names,'location', legend_location);
+end
 
 %% Labels and name for the graph
 
