@@ -30,15 +30,15 @@ else
 end
 
 switch plot_type
-    case scatter
+    case 'scatter'
         if ~isempty(plot_shape)  == 0
             hold on
-            for i = 1:length(x_data)
+            for i = 1:length(x_data(1,:))
                 data{i,1} = scatter(x_data{1,i}(:,1),y_data{1,i}(:,1),'filled','c','MarkerFaceColor', map(i,:),'MarkerEdgeColor','k');
             end
         else
             hold on
-            for i = 1:length(x_data)
+            for i = 1:length(x_data(1,:))
                 data{i,1} = scatter(x_data{1,i}(:,1),y_data{1,i}(:,1),'filled',plot_shape{1,i},'MarkerFaceColor', map(i,:),'MarkerEdgeColor','k');
             end
         end
